@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        table {
+            border: 1px solid black;
+            border-collapse: collapse;
+            height: 300px;
+            width: 1750px;
+            outline: none;
+            text-align: center;
+        }
+
+        .header td {
+            border: 1px solid rgb(0, 0, 0);
+            padding-left: 20px;
+        }
+
+        td {
+            border-left: 1px solid rgb(24, 22, 22);
+            padding: 20px;
+        }
+
+        .DatatableBox {
+            margin: 50px;
+        }
+
+        ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #Tbl1 {
+            display: none;
+        }
+
+
+
+        #tbl2 {
+            display: none;
+        }
+
+        #Tbl3 {
+            display: none;
+        }
+
+        image {
+            height: 100px;
+            width: 100px;
+            margin-left: 10px;
+            object-fit: cover;
+        }
+        button{
+            border-radius: 10px;
+            background-color: black;
+            color: antiquewhite;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="fetchdata">fetchData</button>
+    <div class="DatatableBox" id="Tbl1">
+        <table>
+            <thead>
+                <tr class="header">
+                    <td>ID</td>
+                    <td>Title</td>
+                    <td>Body</td>
+                    <td>Tags</td>
+                    <td>Reactions</td>
+                    <td>userId</td>
+                </tr>
+            </thead>
+            <tbody id="Data1"></tbody>
+        </table>
+    </div>
+    <div class="DatatableBox" id="tbl2">
+        <table>
+            <thead>
+                <tr class="header">
+                    <td>ID</td>
+                    <td>Title</td>
+                    <td>Brand</td>
+                    <td>Catagory</td>
+                    <td>Description</td>
+
+                    <td>Discount</td>
+                    <td>Price</td>
+                    <td>Rating</td>
+                    <td>Stock</td>
+                    <td>Images</td>
+                </tr>
+            </thead>
+            <tbody id="Data2"></tbody>
+        </table>
+    </div>
+    <div class="DatatableBox" id="Tbl3">
+        <table>
+            <thead>
+                <tr class="header">
+                    <td>ID</td>
+                    <td>Todo</td>
+
+                    <td>Completed Status</td>
+                    <td>UserId</td>
+                </tr>
+            </thead>
+            <tbody id="Data3"></tbody>
+        </table>
+    </div>
+    <script>
+        const btn = document.getElementById("fetchdata")
+        btn.addEventListener("click", function () {
+            promiseAPI1().then((res) => {
+                console.log(res)
+                if (res) {
+                    document.getElementById("Tbl1").style.display = "block"
+                    document.getElementById("Data1").innerHTML = res?.posts.map((item) => {
+                        return `<tr>
+                    <td>${item?.id}</td>
+                    <td>${item?.title}</td>
+                    <td>${item?.body}</td>
+                    <td>
+                     <ul>
+                     ${item.tags.map((item) => {
+                            return `<li>${item}</li>`
+                        })}
+                     </ul >
+                    </td >
+                    <td >${item?.reactions}</td>
+                        <td >${item?.userId}</td>
+                </tr > `
+                    }).join("")
+                }
+
+
+
+                return res;
+            }).then((res) => {
+                promiseAPI2().then((res) => {
+                    console.log(res)
+                    if (res) {
+                        document.getElementById("tbl2").style.display = "block"
+                        document.getElementById("Data2").innerHTML = res?.products.map((item) => {
+                            return `<tr>
+                        <td>${item?.id}</td>
+                        <td>${item?.title}</td>
+                        <td>${item?.brand}</td>
+                        <td>${item?.category}</td>
+                        <td>${item?.description}</td>
+                       
+                        <td >${item?.discountPercentage}%</td>
+                            <td >${item?.price}</td>
+                            <td >${item?.rating}</td>
+                            <td >${item?.stock}</td>
+                            <td>
+                              <ul>
+                                ${item.images.map((item) => {
+                                return `<li><image src=${item}></li>`
+                            }).join("")}
+                               </ul >
+                            </td >
+                    </tr > `
+                        }).join("")
+                    }
+                    return res
+                })
+            }).then((res) => {
+                promiseAPI3().then((res) => {
+
+                    if (res) {
+                        document.getElementById("Tbl3").style.display = "block"
+                        document.getElementById("Data3").innerHTML = res?.todos.map((item) => {
+                            return `<tr>
+                    <td>${item?.id}</td>
+                    <td>${item?.todo}</td>
+                    <td>${item?.completed}</td>
+                    <td >${item?.userId}</td>
+                </tr > `
+                        }).join("")
+                    }
+
+                    console.log(res)
+                })
+            }).catch((err) => {
+                console.log(err);
+            })
+        })
+
+
+        function promiseAPI1() {
+            return new Promise(function (resolve, reject) {
+                setTimeout(function () {
+                    fetch("https://dummyjson.com/posts").then((response) => {
+                        return response.json()
+                    }).then((response) => {
+
+                        resolve(response)
+                    })
+                }, 1000)
+            })
+        }
+
+        function promiseAPI2() {
+            return new Promise(function (resolve, reject) {
+                setTimeout(function () {
+                    fetch("https://dummyjson.com/products").then((response) => {
+                        return response.json()
+                    }).then((response) => {
+
+                        resolve(response)
+                    })
+                }, 2000)
+            })
+        }
+
+        function promiseAPI3() {
+            return new Promise(function (resolve, reject) {
+                setTimeout(function () {
+                    fetch("https://dummyjson.com/todos").then((response) => {
+                        return response.json()
+                    }).then((response) => {
+
+                        resolve(response)
+                    })
+                }, 3000)
+            })
+        }
+    </script>
+    <!-- <script src="/index.js"></script> -->
+</body>
+
+</html>
